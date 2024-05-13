@@ -1,0 +1,102 @@
+//product schema
+const mongoose = require("mongoose");
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    brand: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
+      ref: "Category",
+      required: true,
+    },
+    sizes: {
+      type: [String],
+      enum: ["S", "M", "L", "XL", "XXL"],
+      required: true,
+    },
+    colors: {
+      type: [String],
+      required: true,
+    },
+
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+
+    images: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
+
+    price: {
+      type: Number,
+      required: true,
+    },
+
+    totalQty: {
+      type: Number,
+      required: true,
+    },
+    totalSold: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+  }
+);
+
+//Virtuals:properties that do not exists inside our database but upon querying we can gett that property 
+//qty left
+productSchema.virtual("qtyLeft").get(function () {
+  const product = this;
+  return product.totalQty - product.totalSold;
+});
+//Total rating
+productSchema.virtual("totalReviews").get(function () {
+  const product = this;
+  return product?.reviews?.length;
+});
+//average Rating
+productSchema.virtual("averageRating").get(function () {
+  let ratingsTotal = 0;
+  const product = this;
+  product?.reviews?.forEach((review) => {
+    ratingsTotal += review?.rating;
+  });
+  //calc average rating
+  const averageRating = Number(ratingsTotal / product?.reviews?.length).toFixed(
+    1
+  );
+  return averageRating;
+});
+
+
+//schema to model conversion
+
+const Product = mongoose.model("Product", productSchema);
+module.exports = Product; //export the model
