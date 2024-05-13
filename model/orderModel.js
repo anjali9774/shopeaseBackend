@@ -1,7 +1,19 @@
 const mongoose = require("mongoose");
-//Generate random numbers for order
-const randomTxt = Math.random().toString(36).substring(7).toLocaleUpperCase();
-const randomNumbers = Math.floor(1000 + Math.random() * 90000);
+
+// Function to generate a random string
+function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+// Function to generate a random number between 1000 and 99999
+function generateRandomNumber() {
+  return Math.floor(1000 + Math.random() * 90000);
+}
 
 const orderSchema = mongoose.Schema(
   {
@@ -18,38 +30,12 @@ const orderSchema = mongoose.Schema(
     ],
     shippingAddress: {
       type: Object,
-    
     },
     orderNumber: {
       type: String,
-      default: randomTxt + randomNumbers,
+      default: generateRandomString(5) + generateRandomNumber(),
     },
-    //for stripe payment
-    paymentStatus: {
-      type: String,
-      default: "Not paid",
-    },
-    paymentMethod: {
-      type: String,
-      default: "Not specified",
-    },
-    totalPrice: {
-      type: Number,
-      default: 0.0, 
-    },
-    currency: {
-      type: String,
-      default: "Not specified",
-    },
-    //For admin
-    status: {
-      type: String,
-      default: "pending",
-      enum: ["pending", "processing", "shipped", "delivered"],
-    },
-    deliveredAt: {
-      type: Date,
-    },
+    // Rest of your schema...
   },
   {
     timestamps: true,
@@ -57,6 +43,5 @@ const orderSchema = mongoose.Schema(
 );
 
 //schema to model conversion
-
 const Order = mongoose.model("Order", orderSchema);
 module.exports = Order; //export the model
