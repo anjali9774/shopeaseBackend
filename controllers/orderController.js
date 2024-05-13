@@ -79,8 +79,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
       orderId: JSON.stringify(order?._id),
     },
     mode: "payment",
-    success_url: "https://shopeasefrontend.onrender.com/success",
-    cancel_url: "https://shopeasefrontend.onrender.com/cancel",
+    success_url: "https://127.0.0.1:3001/success",
+    cancel_url: "https://127.0.0.1:3001/cancel",
   });
   res.send({ url: session.url });
 });
