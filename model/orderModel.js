@@ -35,7 +35,30 @@ const orderSchema = mongoose.Schema(
       type: String,
       default: generateRandomString(5) + generateRandomNumber(),
     },
-    // Rest of your schema...
+    paymentStatus: {
+      type: String,
+      default: "Not paid",
+    },
+    paymentMethod: {
+      type: String,
+      default: "Not specified",
+    },
+    totalPrice: {
+      type: Number,
+      default: 0.0, 
+    },
+    currency: {
+      type: String,
+      default: "Not specified",
+    },
+    status: {
+      type: String,
+      default: "pending",
+      enum: ["pending", "processing", "shipped", "delivered"],
+    },
+    deliveredAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
